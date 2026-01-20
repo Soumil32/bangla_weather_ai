@@ -38,7 +38,7 @@ const response = await ai.models.generateContent({
   },
 });
 
-contents.push(response.candidates[0].content);
+//contents.push(response.candidates[0].content);
 
 async function getRiverDischarge() {
 	const params = {
@@ -66,7 +66,7 @@ if (response.functionCalls && response.functionCalls.length > 0) {
 	const result = await getRiverDischarge();
 	const function_response_part = {
 		name: functionCall.name,
-		response: { result: "The river discharge values are " + result }
+		response: { result: "The river discharge values of the area are " + result }
 	}
 	console.log("Tool ")
 	contents.push({ role: 'user', parts: [{ functionResponse: function_response_part }] });
@@ -74,9 +74,12 @@ if (response.functionCalls && response.functionCalls.length > 0) {
 	const final_response = await ai.models.generateContent({
 		model: 'gemini-3-flash-preview',
 		contents: contents,
+		config: {
+			tools: []
+		}
 	});
 	console.log("Final Response:");
-	console.log(final_response.candidates[0].content.text);
+	console.log(final_response.candidates[0].content);
 } else {
   console.log("No function call found in the response.");
   console.log(response.text);
